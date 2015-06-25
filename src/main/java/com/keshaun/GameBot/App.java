@@ -1,115 +1,186 @@
 package com.keshaun.GameBot;
 
-import com.keshaun.GameBot.commands.BlackjackCommands;
-import com.keshaun.GameBot.commands.MafiaCommands;
-import com.keshaun.GameBot.commands.ManagementCommands;
-import com.keshaun.GameBot.commands.PokerCommands;
-import com.keshaun.GameBot.events.EventHandler;
-import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.Yaml;
+// Internal Imports
+import com.keshaun.GameBot.commands.*;
+import com.keshaun.GameBot.events.*;
+import com.keshaun.GameBot.exceptions.*;
+import com.keshaun.GameBot.utils.*;
 
+// PircBotX Imports
+import org.pircbotx.*;
+import org.pircbotx.exception.*;
+
+// Java Imports
 import java.awt.*;
 import java.io.*;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.logging.*;
 
 public class App {
-    //User levels for the Bot
+    // User Levels for the Bot
     public final static int OWNER = 100;
     public final static int ADMIN = 50;
     public final static int MOD = 25;
     public final static int BANNED = 0;
 
-    //Game status variables
-    public static boolean gameOn = false;
-    public static boolean gameQueue = false;
-    public static boolean gameInProgress = false;
-    public static int gameType = 0;
+    // Game Status Variables
+    protected boolean gameOn = false;
+    protected boolean gameQueue = false;
+    protected boolean gameInProgress = false;
+    protected int gameType = 0;
 
-    //Variables for config
-    public static Logger logger = LoggerFactory.getLogger(App.class);
-    public static Map<String, Object> conf = null;
-    public static Yaml yaml = new Yaml();
-    public static File configurationFile = new File("config/config.yml");
+    // Logger Variable
+    public static final Logger LOGGER = Logger.getLogger("BotLogger");
 
-    //GUI variable
-    public static boolean useGUI = true;
+    // Param-Based Variables
+    public boolean useGUI = true;
+    public boolean gameBot = true;
 
-    //Function for setting up config file
-    @SuppressWarnings("unchecked")
-    public static void setupFolders() {
-        File f = new File("config");
-        f.mkdir();
-        try {
-            if (!configurationFile.exists()) {
-                configurationFile.createNewFile();
-                Scanner scanner = new Scanner(App.class.getResourceAsStream("./defaultConfig.yml"));
-                FileWriter fileWriter = new FileWriter(configurationFile);
-                while (scanner.hasNextLine()) {
-                    fileWriter.write(scanner.nextLine() + '\n');
-                }
-                fileWriter.close();
-                scanner.close();
-                logger.info("Finished writing default config.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public PircBotX bot;
 
-        try {
-            conf = (Map<String, Object>) yaml.load(new FileInputStream(configurationFile));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            //Checks if one of the args is "nogui"
-            if (args[i].contains("nogui")) {
-                useGUI = false;
-            }
-        }
-
-        //If conditions met, start GUI for easy shutdown.
-        if (!GraphicsEnvironment.isHeadless() && useGUI)
-            new GUI();
-
-        setupFolders();
-        new App();
-    }
-
-    //Bot's IRC configurations
-    Configuration<PircBotX> botConf = new Configuration.Builder<PircBotX>()
-            .setName((String) conf.get("name"))
-            .setLogin((String) conf.get("login"))
-            .setRealName((String) conf.get("realname"))
+    //Bot's IRC Configuration (Games)
+    Configuration<PircBotX> gameBotConfig = new Configuration.Builder<PircBotX>()
+            .setName(PropManager.NAME)
+            .setLogin(PropManager.LOGIN)
+            .setRealName(PropManager.REALNAME)
             .setAutoNickChange(true)
-            .setServer((String) conf.get("hostname"), (Integer) conf.get("port"))
-            .addAutoJoinChannel("#" + (String) conf.get("autojoinchannel"), (String) conf.get("channelkey"))
+            .setServer(PropManager.HOSTNAME, PropManager.PORT)
+            .addAutoJoinChannel("#" + PropManager.AUTOJOIN, PropManager.CHANNELKEY)
             .addListener(new EventHandler())
             .addListener(new BlackjackCommands())
             .addListener(new MafiaCommands())
             .addListener(new PokerCommands())
             .addListener(new ManagementCommands())
-            .setNickservPassword((String) conf.get("nickserv"))
+            .setNickservPassword(PropManager.NICKSERV)
             .buildConfiguration();
+    
+    //Bot's IRC Configuration (No Games)
+    Configuration<PircBotX> basicBotConfig = new Configuration.Builder<PircBotX>()
+            .setName(PropManager.NAME)
+            .setLogin(PropManager.LOGIN)
+            .setRealName(PropManager.REALNAME)
+            .setAutoNickChange(true)
+            .setServer(PropManager.HOSTNAME, PropManager.PORT)
+            .addAutoJoinChannel("#" + PropManager.AUTOJOIN, PropManager.CHANNELKEY)
+            .addListener(new EventHandler())
+            .addListener(new ManagementCommands())
+            .setNickservPassword(PropManager.NICKSERV)
+            .buildConfiguration();
+    
+    // GUI Object
+    protected GUI gui;
+    
+    // Game Status Accessors
+    public boolean getGameOn() {
+    	return gameOn;
+    }
+    
+    public boolean getGameQueue() {
+    	return gameQueue;
+    }
+    
+    public boolean getGameInProgress() {
+    	return gameInProgress;
+    }
+    
+    public int getGameType() {
+    	return gameType;
+    }
+    
+    // Game Status Mutators
+    public void toogleGameOn() {
+    	gameOn = !gameOn;
+    }
+    
+    public void toogleGameQueue() {
+    	gameQueue = !gameQueue;
+    }
+    
+    public void toogleGameInProgress() {
+    	gameInProgress = !gameInProgress;
+    }
+    
+    public void setGameType(int type) throws InvalidGameTypeException {
+    	if (type < 0 || type > 2) {
+    		throw new InvalidGameTypeException();
+    	}
+    	gameType = type;
+    }
+    
+    public void setGameType() throws InvalidGameTypeException {
+    	setGameType(0);
+    }
+    
+    // Comparison Method
+    @Override
+    public boolean equals (Object other) {
+    	boolean result = false;
+    	
+    	if(other instanceof App) {
+    		App second = (App) other;
+    		result = (this.gameBot == second.gameBot && this.useGUI == second.useGUI && this.gameOn == this.getGameOn() && this.gameQueue == this.getGameQueue() && this.gameInProgress == this.getGameInProgress() && this.gameType == this.getGameType());
+    	}
+    	
+    	return result;
+    }
+    
+    // Hash Code Method
+    public int hashCode() {
+    	int on = gameOn ? 1 : 0;
+    	int queue = gameQueue ? 1 : 0;
+    	int inProgress = gameInProgress ? 1 : 0;
+    	int game = gameBot ? 1 : 0;
+    	int use = useGUI ? 1 :0;
+    	
+    	return 10 * (10 * (10 * (10 * (10 * (10 + game) + use) + on) + queue) + inProgress) + gameType;
+    }
+    	
+    
+   public static void main(String[] args) {
+       App app = new App();
+       LOGGER.setLevel(Level.SEVERE);
+       
+       ConsoleHandler handler = new ConsoleHandler();
+       
+       LOGGER.addHandler(handler);
+       
+	   for (int i = 0; i < args.length; i++) {
+		   if (args[i].contains("basicbot") || args[i].contentEquals("basic-bot")) {
+			   app = new App();
+		   }
+		   
+		   if (args[i].contains("nogui")) {
+                app.useGUI = false;
+            }
+        }
 
-    //Bot class
+        // If conditions met, start GUI for easy shutdown.
+        if (!GraphicsEnvironment.isHeadless() && app.useGUI)
+            app.gui = new GUI();
+
+        app.gui.show();
+        app.start();
+    }
+
+    // App Construction
+    public App(String type) {
+        if ("basic".equals(type)) {
+        	bot = new PircBotX(basicBotConfig);
+        } else {
+        	bot = new PircBotX(gameBotConfig);
+        }
+    }
+    
     public App() {
-        PircBotX bot = new PircBotX(botConf);
-
-        try {
+    	this("game");
+    }
+    
+    public void start() {
+    	try {
             bot.startBot();
         } catch (IOException e) {
-            e.printStackTrace();
+        	LOGGER.log(Level.SEVERE, "Input/Output Error", e);
         } catch (IrcException e) {
-            e.printStackTrace();
+        	LOGGER.log(Level.SEVERE, "Library");
         }
     }
 }
