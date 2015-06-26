@@ -1,4 +1,7 @@
 .idea
 GameBot.iml
-config/config.yml
+src/config/config.properties
 /target/
+.settings/
+.project
+.classpath
