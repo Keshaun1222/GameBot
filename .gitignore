@@ -1,3 +1,4 @@
 .idea
 GameBot.iml
 config/config.yml
+/target/
