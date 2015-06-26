@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public abstract class MySQLListener extends ListenerAdapter<PircBotX> {
     protected Connection c = null;
 
-    private static final Logger LOGGER = (Logger) Logger.getLogger(MySQLListener.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MySQLListener.class.getName());
     
     public MySQLListener() {
         setupDB();

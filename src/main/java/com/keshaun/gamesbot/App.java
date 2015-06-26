@@ -16,10 +16,10 @@ import java.util.logging.*;
 
 public class App {
     // User Levels for the Bot
-    public final static int OWNER = 100;
-    public final static int ADMIN = 50;
-    public final static int MOD = 25;
-    public final static int BANNED = 0;
+    public static final int OWNER = 100;
+    public static final int ADMIN = 50;
+    public static final int MOD = 25;
+    public static final int BANNED = 0;
 
     // Game Status Variables
     private boolean gameOn = false;
@@ -67,6 +67,19 @@ public class App {
     
     // GUI Object
     protected GUI gui;
+
+    // App Construction
+    public App(String type) {
+        if ("basic".equals(type)) {
+        	bot = new PircBotX(basicBotConfig);
+        } else {
+        	bot = new PircBotX(gameBotConfig);
+        }
+    }
+    
+    public App() {
+    	this("game");
+    }
     
     // Game Status Accessors
     public boolean getGameOn() {
@@ -159,19 +172,6 @@ public class App {
 
         app.gui.show();
         app.start();
-    }
-
-    // App Construction
-    public App(String type) {
-        if ("basic".equals(type)) {
-        	bot = new PircBotX(basicBotConfig);
-        } else {
-        	bot = new PircBotX(gameBotConfig);
-        }
-    }
-    
-    public App() {
-    	this("game");
     }
     
     public void start() {
