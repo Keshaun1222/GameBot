@@ -48,7 +48,7 @@ public class App {
             .addListener(new BlackjackCommands())
             .addListener(new MafiaCommands())
             .addListener(new PokerCommands())
-            .addListener(new ManagementCommands())
+            .addListener(new ManagementCommands(this))
             .setNickservPassword(PropManager.NICKSERV)
             .buildConfiguration();
     
@@ -61,7 +61,7 @@ public class App {
             .setServer(PropManager.HOSTNAME, PropManager.PORT)
             .addAutoJoinChannel("#" + PropManager.AUTOJOIN, PropManager.CHANNELKEY)
             .addListener(new EventHandler())
-            .addListener(new ManagementCommands())
+            .addListener(new ManagementCommands(this))
             .setNickservPassword(PropManager.NICKSERV)
             .buildConfiguration();
     
