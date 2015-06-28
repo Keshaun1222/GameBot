@@ -45,7 +45,7 @@ public class App {
             .setServer(PropManager.HOSTNAME, PropManager.PORT)
             .addAutoJoinChannel("#" + PropManager.AUTOJOIN, PropManager.CHANNELKEY)
             .addListener(new EventHandler())
-            .addListener(new BlackjackCommands())
+            .addListener(new BlackjackCommands(this))
             .addListener(new MafiaCommands())
             .addListener(new PokerCommands())
             .addListener(new ManagementCommands(this))
