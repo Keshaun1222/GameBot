@@ -178,9 +178,9 @@ public class App {
     	try {
             bot.startBot();
         } catch (IOException e) {
-        	LOGGER.log(Level.SEVERE, "Input/Output Error", e);
+        	LOGGER.log(Level.SEVERE, ErrorMessages.IO, e);
         } catch (IrcException e) {
-        	LOGGER.log(Level.SEVERE, "Library", e);
+        	LOGGER.log(Level.SEVERE, ErrorMessages.IRC, e);
         }
     }
 }

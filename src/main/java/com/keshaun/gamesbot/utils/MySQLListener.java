@@ -27,7 +27,7 @@ public abstract class MySQLListener extends ListenerAdapter<PircBotX> {
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "SQL Error", e);
         } catch (ClassNotFoundException e) {
-            LOGGER.log(Level.SEVERE, "Class not Found Error", e);
+            LOGGER.log(Level.SEVERE, ErrorMessages.CLASS_NOT_FOUND, e);
         }
     }
 
@@ -35,7 +35,7 @@ public abstract class MySQLListener extends ListenerAdapter<PircBotX> {
         try {
             c.close();
         } catch (SQLException e) {
-        	LOGGER.log(Level.SEVERE, "SQL Error", e);
+        	LOGGER.log(Level.SEVERE, ErrorMessages.SQL, e);
         }
     }
 }

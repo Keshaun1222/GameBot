@@ -29,10 +29,10 @@ public class PropManager {
 			if (input != null) {
 				PROP.load(input);
 			} else {
-				throw new FileNotFoundException("Properties file not found...");
+				throw new FileNotFoundException("Properties file '" + CONFIGFILE + "' not found..");
 			}	
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Input/Output Error", e);
+			LOGGER.log(Level.SEVERE, ErrorMessages.IO, e);
 		}
 		
 		HOSTNAME = PROP.getProperty("hostname");
