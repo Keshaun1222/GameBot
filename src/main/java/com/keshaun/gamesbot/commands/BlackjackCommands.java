@@ -14,7 +14,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import com.keshaun.gamesbot.App;
 import com.keshaun.gamesbot.objects.Card;
 
-public class BlackjackCommands extends ListenerAdapter<PircBotX> {
+public class BlackjackCommands extends MySQLListener {
     private List<User> players = new ArrayList<User>();
     private List<Card[]> hands = new ArrayList<Card[]>();
     private Card[] dealerHand = new Card[2];
@@ -177,5 +177,70 @@ public class BlackjackCommands extends ListenerAdapter<PircBotX> {
     	}
     	
     	dealerHand();
+    }
+    
+    @Override
+    protected void setupDB() {
+        Statement stmt = null;
+        try {
+            openConnection();
+            stmt = c.createStatement();
+            String sql = "CREATE TABLE IF NOT EXISTS blackjack (id INT(20) PRIMARY KEY NOT NULL AUTO_INCREMENT, winners VARCHAR(50), players INT(10), date DATE)";
+            stmt.executeUpdate(sql);
+            stmt.close();
+            closeConnection();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, ErrorTexts.SQL, e);
+        }
+    }
+
+    private ResultSet getTopTen(int type) {
+        openConnection();
+        String sql;
+        ResultSet rs = null;
+        switch(type) {
+            case 1:
+                sql = "SELECT winners, SUM(players) as points FROM blackjack GROUP BY winners WHERE date = CURDATE() ORDER BY points DESC LIMIT 10";
+                break;
+            case 2:
+                sql = "SELECT winners, SUM(players) as points FROM blackjack GROUP BY winners WHERE WEEK(date) = WEEK(CURDATE()) AND YEAR(date) = YEAR(CURDATE()) ORDER BY points DESC LIMIT 10";
+                break;
+            case 3:
+                sql = "SELECT winners, SUM(players) as points FROM blackjack GROUP BY winners WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE()) ORDER BY points DESC LIMIT 10";
+                break;
+            case 4:
+                sql = "SELECT winners, SUM(players) as points FROM blackjack GROUP BY winners WHERE YEAR(date) = YEAR(CURDATE()) ORDER BY points DESC LIMIT 10";
+                break;
+            default:
+                sql = "SELECT winners, SUM(players) as points FROM blackjack GROUP BY winners ORDER BY points DESC LIMIT 10";
+                break;
+        }
+        try {
+            Statement stmt = c.createStatement();
+            rs = stmt.executeQuery(sql);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, ErrorTexts.SQL, e);
+        }
+        return rs;
+    }
+
+    public ResultSet getTopTen() {
+        return getTopTen(0);
+    }
+
+    public ResultSet getTopTenDay() {
+        return getTopTen(1);
+    }
+
+    public ResultSet getTopTenWeek() {
+        return getTopTen(2);
+    }
+
+    public ResultSet getTopTenMonth() {
+        return getTopTen(3);
+    }
+
+    public ResultSet getTopTenYear() {
+        return getTopTen(4);
     }
 }
