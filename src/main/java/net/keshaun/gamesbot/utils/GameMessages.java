@@ -1,4 +1,4 @@
-package com.keshaun.gamesbot.utils;
+package net.keshaun.gamesbot.utils;
 
 public class GameMessages {
 	public static final String CORRECT_ARGS = "Correct Args: ";

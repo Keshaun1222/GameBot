@@ -7,11 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.keshaun.gamesbot.App;
 import net.keshaun.gamesbot.commands.utils.ManagementUtil;
-import net.keshaun.gamesbot.utils.ErrorTexts;
+import net.keshaun.gamesbot.utils.ErrorMessages;
 import net.keshaun.gamesbot.utils.MySQLListener;
 
 import org.pircbotx.PircBotX;
@@ -41,9 +40,9 @@ public class ManagementCommands extends MySQLListener {
 		try {
 			call.invoke(util);
 		} catch(IllegalAccessException e) {
-			LOGGER.log(Level.SEVERE, ErrorTexts.ILLEGAL_ACCESS, e);
+			LOGGER.log(Level.SEVERE, ErrorMessages.ILLEGAL_ACCESS, e);
 		} catch(InvocationTargetException e) {
-			LOGGER.log(Level.SEVERE, ErrorTexts.INVOCATION_TARGET, e);
+			LOGGER.log(Level.SEVERE, ErrorMessages.INVOCATION_TARGET, e);
 		}
 	}
 
@@ -58,7 +57,7 @@ public class ManagementCommands extends MySQLListener {
 			stmt.close();
 			closeConnection();
 		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, ErrorTexts.SQL, e);
+			LOGGER.log(Level.SEVERE, ErrorMessages.SQL, e);
 		}
 	}
 
@@ -73,7 +72,7 @@ public class ManagementCommands extends MySQLListener {
 			stmt.executeUpdate();
 			closeConnection();
 		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, ErrorTexts.SQL, e);
+			LOGGER.log(Level.SEVERE, ErrorMessages.SQL, e);
 		}
 	}
 	
@@ -93,7 +92,7 @@ public class ManagementCommands extends MySQLListener {
 			stmt.close();
 			closeConnection();
 		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, ErrorTexts.SQL, e);
+			LOGGER.log(Level.SEVERE, ErrorMessages.SQL, e);
 		}
 		
 		return level;

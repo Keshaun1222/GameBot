@@ -1,4 +1,4 @@
-package com.keshaun.gamesbot.objects;
+package net.keshaun.gamesbot.objects;
 
 import org.pircbotx.Colors;
 

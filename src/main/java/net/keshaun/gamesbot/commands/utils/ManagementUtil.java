@@ -56,7 +56,7 @@ public class ManagementUtil {
 				event.respond(Colors.RED + "Correct Args: " + Colors.BLACK + "!addAdmin <nick>");
 			}
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !addAdmin");
+			event.respond(Colors.RED + "You don't have proper access to use !addAdmin");
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class ManagementUtil {
 				event.respond(Colors.RED + "Correct Args: " + Colors.BLACK + "!addMod <nick>");
 			}
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !addMod");
+			event.respond(Colors.RED + "You don't have proper access to use !addMod");
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class ManagementUtil {
 				event.respond(Colors.RED + "Correct Args: " + Colors.BLACK + "!ban <nick>");
 			}
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !ban");
+			event.respond(Colors.RED + "You don't have proper access to use !ban");
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class ManagementUtil {
 				event.respond(Colors.RED + "Correct Args: " + Colors.BLACK + "!kb <nick>");
 			}
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !kb");
+			event.respond(Colors.RED + "You don't have proper access to use !kb");
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class ManagementUtil {
 				event.respond(Colors.RED + "Correct Args: " + Colors.BLACK + "!kick <nick>");
 			}
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !kick");
+			event.respond(Colors.RED + "You don't have proper access to use !kick");
 		}
 	}
 	
@@ -125,7 +125,7 @@ public class ManagementUtil {
 				event.respond(Colors.RED + "Correct Args: " + Colors.BLACK + "!join <nick>");
 			}
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !join");
+			event.respond(Colors.RED + "You don't have proper access to use !join");
 		}
 	}
 	
@@ -147,20 +147,20 @@ public class ManagementUtil {
 	public void enableGames() {
 		if (mc.check(user.getNick(), App.ADMIN)) {
 			if (!mc.getApp().getGameOn())
-				mc.getApp().toggleGameOn();
+				mc.getApp().toogleGameOn();
 			channel.send().message(Colors.GREEN + "Games enabled.");
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !enableGames");
+			event.respond(Colors.RED + "You don't have proper access to use !enableGames");
 		}
 	}
 	
 	public void disableGames() {
 		if (mc.check(user.getNick(), App.ADMIN)) {
 			if (mc.getApp().getGameOn())
-				mc.getApp().toggleGameOn();
+				mc.getApp().toogleGameOn();
 			channel.send().message(Colors.RED + "Games disabled.");
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !enableGames");
+			event.respond(Colors.RED + "You don't have proper access to use !enableGames");
 		}
 	}
 	
@@ -191,7 +191,7 @@ public class ManagementUtil {
 				event.respond(Colors.RED + "Correct Args: " + Colors.BLACK + "!gameType <game>");
 			}
 		} else {
-			event.respond(Colors.RED + "You don't have proper acces to use !gameType");
+			event.respond(Colors.RED + "You don't have proper access to use !gameType");
 		}
 	}
 	

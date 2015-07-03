@@ -1,6 +1,6 @@
 .idea
 GameBot.iml
-src/main/java/resources/config.properties
+src/main/resources/config.properties
 /target/
 .settings/
 .project
