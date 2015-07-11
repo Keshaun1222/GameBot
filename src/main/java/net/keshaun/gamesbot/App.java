@@ -8,9 +8,13 @@ import net.keshaun.gamesbot.commands.PokerCommands;
 import net.keshaun.gamesbot.events.EventHandler;
 import net.keshaun.gamesbot.exceptions.InvalidGameTypeException;
 import net.keshaun.gamesbot.utils.ErrorMessages;
+import net.keshaun.gamesbot.utils.GameType;
 import net.keshaun.gamesbot.utils.PropManager;
+
 import org.pircbotx.*;
 import org.pircbotx.exception.*;
+import org.pircbotx.hooks.ListenerAdapter;
+
 
 // Java Imports
 import java.awt.*;
@@ -37,9 +41,18 @@ public class App {
     private boolean useGUI = true;
     private boolean gameBot = true;
 
+    // Bot Variable
     private PircBotX bot;
 
-    //Bot's IRC Configuration (Games)
+    // Game Listener Objects
+    private GameType blackjack = new BlackjackCommands(this);
+    private GameType poker = new PokerCommands();
+    private GameType mafia = new MafiaCommands();
+    
+    // Management Listener Object
+    private ListenerAdapter<PircBotX> management = new ManagementCommands(this);
+    
+    // Bot's IRC Configuration (Games)
     Configuration<PircBotX> gameBotConfig = new Configuration.Builder<PircBotX>()
             .setName(PropManager.NAME)
             .setLogin(PropManager.LOGIN)
@@ -48,14 +61,14 @@ public class App {
             .setServer(PropManager.HOSTNAME, PropManager.PORT)
             .addAutoJoinChannel("#" + PropManager.AUTOJOIN, PropManager.CHANNELKEY)
             .addListener(new EventHandler())
-            .addListener(new BlackjackCommands(this))
-            .addListener(new MafiaCommands())
-            .addListener(new PokerCommands())
-            .addListener(new ManagementCommands(this))
+            .addListener(blackjack)
+            .addListener(mafia)
+            .addListener(poker)
+            .addListener(management)
             .setNickservPassword(PropManager.NICKSERV)
             .buildConfiguration();
     
-    //Bot's IRC Configuration (No Games)
+    // Bot's IRC Configuration (No Games)
     Configuration<PircBotX> basicBotConfig = new Configuration.Builder<PircBotX>()
             .setName(PropManager.NAME)
             .setLogin(PropManager.LOGIN)
@@ -64,7 +77,7 @@ public class App {
             .setServer(PropManager.HOSTNAME, PropManager.PORT)
             .addAutoJoinChannel("#" + PropManager.AUTOJOIN, PropManager.CHANNELKEY)
             .addListener(new EventHandler())
-            .addListener(new ManagementCommands(this))
+            .addListener(management)
             .setNickservPassword(PropManager.NICKSERV)
             .buildConfiguration();
     
@@ -128,6 +141,23 @@ public class App {
     // Bot Accessor
     public PircBotX getBot() {
         return bot;
+    }
+    
+    // GUI Accessor
+    public GUI getGUI() {
+    	return gui;
+    }
+    
+    // Game Listener Accessor
+    public GameType getCurrentGameListener() {
+    	switch (getGameType()) {
+	    	case 1:
+	    		return poker;
+	    	case 2:
+	    		return mafia;
+	    	default:
+	    		return blackjack;
+    	}
     }
     
     // Comparison Method

@@ -3,7 +3,9 @@ package net.keshaun.gamesbot.commands;
 import net.keshaun.gamesbot.App;
 import net.keshaun.gamesbot.objects.Card;
 import net.keshaun.gamesbot.utils.ErrorMessages;
+import net.keshaun.gamesbot.utils.GameType;
 import net.keshaun.gamesbot.utils.MySQLListener;
+
 import org.pircbotx.Channel;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
@@ -18,8 +20,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
-public class BlackjackCommands extends MySQLListener {
-    private List<User> players = new ArrayList<User>();
+public class BlackjackCommands extends GameType {
     private List<Card[]> hands = new ArrayList<Card[]>();
     private Card[] dealerHand = new Card[2];
 
@@ -85,7 +86,7 @@ public class BlackjackCommands extends MySQLListener {
                     app.toogleGameQueue();
                     players.add(event.getUser());
                     channel.send().message(Colors.BLUE + "A game queue has been started by " + Colors.BOLD + event.getUser().getNick() + Colors.NORMAL + Colors.BLUE + ". Enter !join to join the queue.");
-                    channel.send().message(Colors.BLUE + getPlayersList(players));
+                    channel.send().message(Colors.BLUE + getPlayersList());
                 } else if (!app.getGameOn()) {
                     event.respond(Colors.RED + "Games aren't enabled right now!");
                 } else if (app.getGameInProgress()) {
@@ -100,7 +101,7 @@ public class BlackjackCommands extends MySQLListener {
                     if (!players.contains(event.getUser())) {
                         players.add(event.getUser());
                         channel.send().message(Colors.BLUE + Colors.BOLD + event.getUser().getNick() + Colors.NORMAL + " has joined the queue.");
-                        channel.send().message(Colors.BLUE + getPlayersList(players));
+                        channel.send().message(Colors.BLUE + getPlayersList());
                     } else {
                         event.respond(Colors.RED + "You are already in the queue!");
                     }
@@ -125,11 +126,11 @@ public class BlackjackCommands extends MySQLListener {
         }
     }
 
-    public String getPlayersList(List<User> list) {
+    public String getPlayersList() {
         String listString = "Current Players (" + players.size() + "/10):";
 
-        for (int i = 0; i < list.size(); i++) {
-            listString += " " + list.get(i).getNick();
+        for (int i = 0; i < players.size(); i++) {
+            listString += " " + players.get(i).getNick();
         }
 
         return listString;

@@ -138,8 +138,10 @@ public class ManagementUtil {
 					quitMessage += message.split(" ")[i] + " ";
 				}
 				bot.sendIRC().quitServer(quitMessage);
+				//mc.getApp().getGUI().close();
 			} else {
 				bot.sendIRC().quitServer();
+				mc.getApp().getGUI().close();
 			}
 		}
 	}
@@ -196,8 +198,6 @@ public class ManagementUtil {
 	}
 	
 	public Method call(String method) throws NoSuchMethodException {
-		Method tempMethod = null;
-		tempMethod = getClass().getMethod(method);
-		return tempMethod;
+		return getClass().getMethod(method);
 	}
 }
