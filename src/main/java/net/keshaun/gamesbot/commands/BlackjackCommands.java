@@ -73,14 +73,14 @@ public class BlackjackCommands extends MySQLListener {
 
         if (app.getGameType() == 0) {
             //Get a random card from the deck.
-            if ("!randomCard".equalsIgnoreCase(command)) {
+            if (".randomCard".equalsIgnoreCase(command)) {
                 int i = rand.nextInt(13);
                 int j = rand.nextInt(4);
 
-                event.respond(deck[i][j].toString());
+                event.respond(deck[i][j].toString() + " " + Colors.NORMAL + Colors.BOLD + "Points: " + Colors.NORMAL + deck[i][j].getPointsString());
             }
 
-            if ("!startQueue".equalsIgnoreCase(command)) {
+            if (".startQueue".equalsIgnoreCase(command)) {
                 if (app.getGameOn() && !(app.getGameInProgress() || app.getGameQueue())) {
                     app.toogleGameQueue();
                     players.add(event.getUser());
@@ -95,7 +95,7 @@ public class BlackjackCommands extends MySQLListener {
                 }
             }
 
-            if ("!join".equalsIgnoreCase(command)) {
+            if (".join".equalsIgnoreCase(command)) {
                 if (app.getGameOn() && !app.getGameInProgress() && app.getGameQueue()) {
                     if (!players.contains(event.getUser())) {
                         players.add(event.getUser());
@@ -113,7 +113,7 @@ public class BlackjackCommands extends MySQLListener {
                 }
             }
 
-            if ("!start".equalsIgnoreCase(command)) {
+            if (".start".equalsIgnoreCase(command)) {
                 //TODO Create functionality for !start
                 if (app.getGameOn() && !app.getGameInProgress() && app.getGameQueue() && players.size() > 2) {
                     app.toogleGameQueue();
